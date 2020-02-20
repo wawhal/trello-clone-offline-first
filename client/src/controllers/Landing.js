@@ -1,6 +1,7 @@
 import React from 'react';
 import Board from './Board';
 import Spinner from '../components/Spinner';
+import { clearPersistedUserInfo } from '../utils/ls'
 
 const Landing = ({ auth, db }) => {
 
@@ -13,7 +14,11 @@ const Landing = ({ auth, db }) => {
   }
 
   if (auth.isLoggedIn) {
-    return <Board auth={auth} db={db} />;
+    return (
+      <div className="app">
+        <Board auth={auth} db={db} />
+      </div>
+    )
   }
 
   return (

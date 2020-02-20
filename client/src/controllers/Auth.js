@@ -1,27 +1,39 @@
 import React from 'react';
 import { isUserLoggedIn, logout } from '../utils/auth';
 import Navbar from '../components/Navbar';
-import { pollOnlineStatus, setOnlineStatus } from '../utils/offline'
+import { setOnlineStatus } from '../utils/offline'
 import * as DBUtils from '../utils/database';
+import { getPersistedUserInfo, clearPersistedUserInfo } from '../utils/ls'
+
+let currentOnlineStatus = window.navigator.onLine;
 
 const AuthWrapper = ({children}) => {
 
   const [isLoggedIn, setIsLoggedIn] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(true);
-  const [isOnline, setIsOnline] = React.useState(false);
   const [db, setDb] = React.useState();
+  const [userInfo, setUserInfo] = React.useState(null);
 
   React.useEffect(() => {
-    DBUtils.createDatabase().then(database => {
-      setDb(database);
-    });
-  }, [])
-
+    if (isLoggedIn) {
+      DBUtils.createDatabase().then(database => {
+        setDb(database);
+      });
+    }
+  }, [isLoggedIn])
 
   const setSession = () => {
     setIsLoading(true);
     isUserLoggedIn()
     .then(loggedIn => {
+      if (loggedIn) {
+        const userInfo = getPersistedUserInfo();
+        if (!userInfo) {
+          return logout()
+        } else {
+          setUserInfo(userInfo);
+        }
+      }
       setIsLoggedIn(loggedIn);
     })
     .catch(() => {
@@ -32,26 +44,23 @@ const AuthWrapper = ({children}) => {
     })
   }
 
+  const handleOnlineStatusChange = (x) => {
+    console.log(x);
+  }
+
   React.useEffect(() => {
-    const callback = (newStatus) => {
-      setIsOnline(newStatus);
-    };
-    setOnlineStatus(isOnline, callback);
-    pollOnlineStatus(isOnline, callback);
-    // eslint-disable-next-line
+    setSession()
   }, [])
 
   React.useEffect(() => {
-    if (isOnline) {
-      setSession();
-    }
-  }, [isOnline])
+    console.log(window.navigator.onLine);
+  }, [window.navigator.onLine])
 
   const childrenProps = {
     auth: {
       isAuthLoading: isLoading,
       isLoggedIn: isLoggedIn,
-      logout,
+      logout: logout,
     },
     db
   };

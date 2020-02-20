@@ -1,8 +1,5 @@
 import { isUserLoggedIn } from './auth'
-
-export const pollOnlineStatus = (isOnline, callback) => {
-  setInterval(() => setOnlineStatus(isOnline, callback), 1000);
-};
+import React from 'react';
 
 export const setOnlineStatus = (isOnline, callback) => {
   const status = window.navigator.onLine;

@@ -18,40 +18,7 @@ const columns = [
   },
 ];
 
-const sampleTasks = [
-  {
-    id: 1,
-    title: 'First task',
-    user_id: '1234',
-    column_id: 2,
-    index: 0
-  },
-  {
-    id: 2,
-    title: 'Se3cond task',
-    user_id: '0',
-    column_id: 1,
-    index: 1
-  },
-  {
-    id: 3,
-    title: 'Third task',
-    user_id: '134',
-    column_id: 1,
-    index: 0
-  },
-  {
-    id: 4,
-    title: 'Fourth task',
-    user_id: '1234',
-    column_id: 0,
-    index: 0
-  },
-]
-
-const Columns = ({ db }) => {
-
-  const [tasks, setTasks] = React.useState(sampleTasks);
+const Columns = ({ db, tasks }) => {
 
   const columnsWithTodos = columns.map(c => {
     const columnTasks = tasks.filter(t => c.id === t.column_id);
@@ -62,23 +29,95 @@ const Columns = ({ db }) => {
   });
 
   const reorderTasks = (taskId, source, destination) => {
+    if (destination.index == source.index) return;
     const movedTask = tasks.find(t => t.id == taskId);
-    const newTasks = [
-      ...tasks.filter(t => t.id != movedTask.id),
-      movedTask
-    ];
-    setTasks(newTasks);
+    delete movedTask._data["_deleted"]
+    delete movedTask._data["_revisions"]
+    movedTask.update({
+      $set: {
+        column_rank: destination.index
+      }
+    }).then(() => {
+      if (destination.index < source.index) {
+        db.trello.find({
+          $and: [{
+            column_id: {
+              $eq: parseInt(destination.droppableId, 10)
+            }
+          }, {
+            column_rank: {
+              $gte: destination.index
+            }        
+          }, {
+            column_rank: {
+              $lt: source.index
+            }        
+          }]
+        }).update({
+          $inc: {
+            column_rank: 1
+          }
+        })
+      } else {
+        db.trello.find({
+          $and: [{
+            column_id: {
+              $eq: parseInt(destination.droppableId, 10)
+            }
+          }, {
+            column_rank: {
+              $gt: source.index
+            }        
+          }, {
+            column_rank: {
+              $lte: source.index
+            }        
+          }]
+        }).update({
+          $inc: {
+            column_rank: -1
+          }
+        })
+      }
+    }).catch((e) => {
+      console.error('could not update', e);
+    });;
   };
 
   const moveTasks = (taskId, source, destination) => {
     const movedTask = tasks.find(t => t.id == taskId);
-    const newTasks = [
-      ...tasks.filter(t => t.id != movedTask.id ),
-      { ...movedTask, column_id: parseInt(destination.droppableId, 10) }
-    ];
-    setTasks(newTasks);
+    movedTask.update({
+      $set: {
+        column_rank: destination.index,
+        column_id: parseInt(destination.droppableId, 10)
+      }
+    }).then(() => {
+      db.trello.find({
+        $and: [{
+          column_id: {
+            $eq: parseInt(destination.droppableId, 10)
+          }
+        }, {
+          column_rank: {
+            $gte: destination.index
+          }        
+        }]
+      }).update({
+        $inc: {
+          column_rank: 1
+        }
+      });
+    }).catch(e => {
+      console.error(e);
+    });
 
   }
+
+  console.log(tasks.map(t => ({
+    id: t.id,
+    column_id: t.column_id,
+    column_rank: t.column_rank
+  })))
 
   const handleDragEnd = result => {
     const { source, destination, draggableId } = result;

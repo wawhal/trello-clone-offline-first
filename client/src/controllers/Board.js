@@ -8,7 +8,7 @@ const Board = ({auth, db}) => {
 
   const [tasks, setTasks] = React.useState(null);
 
-  const getTodos = () => {
+  const getTasks = () => {
     if (!db) {
       return;
     }
@@ -16,16 +16,20 @@ const Board = ({auth, db}) => {
       .find()
       .sort({id: 1}).$.subscribe(tasks => {
         if (!tasks) {
-            return;
+          return;
         }
+        console.log('==================FIRST LOAD');
+        console.log(tasks);
+        console.log('==================');
         setTasks(tasks);
     });
     subs.push(sub);
   }
 
   React.useEffect(() => {
-    getTodos();
-  }, []);
+    getTasks ();
+  }, [db]);
+
 
   if (!tasks) {
     return <Spinner />

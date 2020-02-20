@@ -1,15 +1,17 @@
 import React from 'react';
-import * as Card from './Card'
+import { Card } from 'react-bootstrap';
 import { Droppable, Draggable } from 'react-beautiful-dnd';
+import InputBox from './InsertBox';
 
 const Column = ({
   tasks,
   id,
   name,
+  db
 }) => {
 
   const sortedTasks = tasks.sort((t1, t2) => {
-    if (t1 > t2) return 1;
+    if (t1.column_rank > t2.column_rank) return 1;
     return -1;
   });
 
@@ -24,6 +26,7 @@ const Column = ({
         {(provided, snapshot) => (
           <div
             ref={provided.innerRef}
+            className="ht1000"
           >
               {
                 sortedTasks.map((task, i) => {
@@ -31,12 +34,12 @@ const Column = ({
                     <Draggable
                       key={task.id}
                       draggableId={task.id.toString()}
-                      index={task.index}
+                      index={task.column_rank}
                     >
                       {
                         (provided, snapshot) => (
                           <div
-                            className="card"
+                            className="card margin-bottom-mid"
                             key={task.id}
                             ref={provided.innerRef}
                             {...provided.draggableProps}
@@ -49,7 +52,6 @@ const Column = ({
                             </Card.Body>
                             <Card.Footer>
                               <div className="display-flex space-between">
-                                <small className="text-muted">Last updated at {task.updated_at}</small>
                                 <small className="text-muted">Created by {task.user_id}</small>
                               </div>
                             </Card.Footer>
@@ -60,6 +62,7 @@ const Column = ({
                   );
                 })
               }
+          <InputBox db={db} column_id={id} columnTasks={tasks}/>
           </div>
       )}
       </Droppable>

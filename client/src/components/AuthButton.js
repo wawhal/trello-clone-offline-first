@@ -20,29 +20,7 @@ const AuthButton = ({ auth }) => {
     // eslint-disable-next-line
   }, [auth])
 
-  const loginAndRefresh = () => {
-    login()
-    .then(() => {
-      window.location.replace(window.location.href);
-    })
-    .catch(err => {
-      console.error(error);
-      setError(error)
-    })
-  };
-
-  const logoutAndRefresh = () => {
-    logout()
-    .then(() => {
-      window.location.replace(window.location.href);
-    })
-    .catch(err => {
-      console.error(err);
-      alert('Unexpected', 'Could not logout');
-    })
-  }
-
-  const onClick = auth.isLoggedIn ? logoutAndRefresh : loginAndRefresh;
+  const onClick = auth.isLoggedIn ? logout : login;
 
   return (
     <Button

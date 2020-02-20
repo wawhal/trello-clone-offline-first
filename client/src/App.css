@@ -2,8 +2,15 @@
   margin-bottom: 20px;
 }
 
+.margin-bottom-mid {
+  margin-bottom: 10px;
+}
+
 .margin-right {
   margin-right: 20px;
+}
+.margin-right-mid {
+  margin-right: 10px;
 }
 
 .display-flex-raw {
@@ -39,4 +46,21 @@
 
 .wd400 {
   width: 400px;
+}
+
+.ht1000 {
+  min-height: 1000px;
+}
+
+.avatar {
+  width: 40px;
+  border-radius: 20px
+}
+
+.card-overrides {
+  max-height: 50px;
+}
+
+.space-between {
+  justify-content: space-between;
 }

@@ -1,7 +1,6 @@
 import React from 'react';
 
 const Card = React.forwardRef(({children, ...props}, ref) => {
-  console.log(ref);
   return (
     <div className="card" {...props}>
       {children}

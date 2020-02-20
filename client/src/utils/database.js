@@ -44,3 +44,9 @@ export const createDatabase = async () => {
   return db;
 };
 
+export const clearDatabase = () => {
+  if (window.db) {
+    const query = window.db.trello.find();
+    query.remove();
+  }
+}
