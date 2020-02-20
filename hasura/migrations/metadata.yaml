@@ -43,7 +43,13 @@ tables:
       filter: {}
     role: user
   table: column
-  update_permissions: []
+  update_permissions:
+  - comment: null
+    permission:
+      columns: []
+      filter: {}
+      set: {}
+    role: user
 - array_relationships: []
   computed_fields: []
   configuration:
@@ -71,6 +77,7 @@ tables:
           _eq: X-Hasura-User-Id
       columns:
       - column_id
+      - column_rank
       - id
       - title
       set:
@@ -92,8 +99,11 @@ tables:
       allow_aggregations: false
       columns:
       - column_id
+      - column_rank
+      - created_at
       - id
       - title
+      - updated_at
       - user_id
       computed_fields: []
       filter: {}
@@ -104,6 +114,7 @@ tables:
     permission:
       columns:
       - column_id
+      - column_rank
       filter: {}
       set: {}
     role: user
