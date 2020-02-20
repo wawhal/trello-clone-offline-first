@@ -16,7 +16,7 @@ export const trelloSchema  = {
     },
     'created_at': {
       'type': 'string',
-      'format': 'date-time'
+      'format': 'date-time',
     },
     'user_id': {
       'type': 'string'

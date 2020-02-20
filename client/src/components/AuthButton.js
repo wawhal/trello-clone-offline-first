@@ -6,9 +6,6 @@ import Spinner from './Spinner';
 const AuthButton = ({ auth }) => {
 
   const getAuthButtonContent = () => {
-    if (auth.isAuthLoading) {
-      return <Spinner />;
-    }
     if (auth.isLoggedIn) {
       return 'Logout';
     }

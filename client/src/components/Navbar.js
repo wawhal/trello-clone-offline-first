@@ -5,7 +5,7 @@ import AuthButton from './AuthButton';
 const NavigationBar = ({ auth }) => {
   return (
     <div className="margin-bottom">
-      <Navbar bg="light" expand="lg">
+      <Navbar expand="lg">
         <Navbar.Brand>Trello Clone</Navbar.Brand>
         <Nav>
           <AuthButton auth={auth} />
