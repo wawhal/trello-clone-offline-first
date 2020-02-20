@@ -5,7 +5,6 @@ import Spinner from './Spinner';
 
 const AuthButton = ({ auth }) => {
 
-
   const getAuthButtonContent = () => {
     if (auth.isAuthLoading) {
       return <Spinner />;
@@ -15,8 +14,6 @@ const AuthButton = ({ auth }) => {
     }
     return 'Login';
   };
-
-  console.log(auth);
 
   const [error, setError] = React.useState(null);
   const [buttonContent, setButtonContent] = React.useState(getAuthButtonContent());

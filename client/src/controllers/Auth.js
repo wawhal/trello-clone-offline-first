@@ -2,12 +2,21 @@ import React from 'react';
 import { isUserLoggedIn, logout } from '../utils/auth';
 import Navbar from '../components/Navbar';
 import { pollOnlineStatus, setOnlineStatus } from '../utils/offline'
+import * as DBUtils from '../utils/database';
 
 const AuthWrapper = ({children}) => {
 
   const [isLoggedIn, setIsLoggedIn] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(true);
   const [isOnline, setIsOnline] = React.useState(false);
+  const [db, setDb] = React.useState();
+
+  React.useEffect(() => {
+    DBUtils.createDatabase().then(database => {
+      setDb(database);
+    });
+  }, [])
+
 
   const setSession = () => {
     setIsLoading(true);
@@ -38,25 +47,26 @@ const AuthWrapper = ({children}) => {
     }
   }, [isOnline])
 
-  const authProps = {
+  const childrenProps = {
     auth: {
       isAuthLoading: isLoading,
       isLoggedIn: isLoggedIn,
       logout,
-    }
+    },
+    db
   };
 
   const childrenWithProps = React.Children.map(
     children,
     child => React.cloneElement(
       child,
-      authProps   
+      childrenProps   
     )
   );
 
   return (
     <div className="layout">
-      <Navbar {...authProps} />
+      <Navbar {...childrenProps} />
       {childrenWithProps}
     </div>
   );
