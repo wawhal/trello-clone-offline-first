@@ -1,0 +1,4 @@
+export const ONEGRAPH_APP_ID = process.env.REACT_APP_ONEGRAPH_APP_ID;
+export const AUTH_PROVIDER = "github";
+export const GRAPHQL_ENGINE_ENDPOINT = process.env.REACT_APP_GRAPHQL_ENGINE_ENDPOINT;
+export const ONLINE = window.navigator.onLine;
