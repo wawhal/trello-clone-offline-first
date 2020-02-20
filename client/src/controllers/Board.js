@@ -23,14 +23,8 @@ const Board = ({auth, db}) => {
     subs.push(sub);
   }
 
-  const startInterval = (t_) => {
-    setTimeout(() => {
-    }, 1000)
-  }
-
   React.useEffect(() => {
     getTodos();
-    startInterval(tasks);
   }, []);
 
   if (!tasks) {
@@ -39,7 +33,7 @@ const Board = ({auth, db}) => {
 
   return (
     <div className="display-flex-raw">
-      <Columns tasks={tasks} />
+      <Columns tasks={tasks} db={db}/>
     </div>
   );
 
