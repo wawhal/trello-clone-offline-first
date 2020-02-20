@@ -20,18 +20,16 @@ const AuthWrapper = ({children}) => {
 
   const setSession = () => {
     setIsLoading(true);
-    // isUserLoggedIn()
-    // .then(loggedIn => {
-    //   setIsLoggedIn(loggedIn);
-    // })
-    // .catch(() => {
-    //   setIsLoggedIn(false);
-    // })
-    // .finally(() => {
-    //   setIsLoading(false);
-    // })
-    setIsLoggedIn(true);
-    setIsLoading(false);
+    isUserLoggedIn()
+    .then(loggedIn => {
+      setIsLoggedIn(loggedIn);
+    })
+    .catch(() => {
+      setIsLoggedIn(false);
+    })
+    .finally(() => {
+      setIsLoading(false);
+    })
   }
 
   React.useEffect(() => {
