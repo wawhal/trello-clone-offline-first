@@ -1,7 +1,7 @@
 export const trelloSchema  = {
   'title': 'trello schema',
   'description': 'todo schema',
-  'version': 0,
+  'version': 5,
   'type': 'object',
   'properties': {
     'id': {
@@ -17,6 +17,24 @@ export const trelloSchema  = {
     'created_at': {
       'type': 'string',
       'format': 'date-time',
+    },
+    'update_at': {
+      'type': 'string',
+      'format': 'date-time'
+    },
+    'user': {
+      'type': 'object',
+      'properties': {
+        'id': {
+          'type': 'string'
+        },
+        'username': {
+          'type': 'string'
+        },
+        'avatar': {
+          'type': 'string'
+        }
+      }
     },
     'user_id': {
       'type': 'string'

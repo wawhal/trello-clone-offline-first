@@ -1,7 +1,7 @@
 import React from 'react';
-import { isUserLoggedIn, logout } from '../utils/auth';
+import { isUserLoggedIn, logout, auth } from '../utils/auth';
 import Navbar from '../components/Navbar';
-import { setOnlineStatus } from '../utils/offline'
+import { tryInternet } from '../utils/offline'
 import * as DBUtils from '../utils/database';
 import { getPersistedUserInfo, clearPersistedUserInfo } from '../utils/ls'
 
@@ -13,35 +13,51 @@ const AuthWrapper = ({children}) => {
   const [isLoading, setIsLoading] = React.useState(true);
   const [db, setDb] = React.useState();
   const [userInfo, setUserInfo] = React.useState(null);
+  const [gqlReplicator ,setgqlReplicator] = React.useState(null);
+  const [isOnline, setIsOnline] = React.useState(false);
 
   React.useEffect(() => {
     if (isLoggedIn) {
       DBUtils.createDatabase().then(database => {
         setDb(database);
+        const graphqlReplicator = new DBUtils.GraphQLReplicator(database);
+        setgqlReplicator(graphqlReplicator);
       });
     }
   }, [isLoggedIn])
 
-  const setSession = () => {
+  React.useEffect(() => {
+    if (isLoggedIn && gqlReplicator && window.navigator.onLine) {
+      gqlReplicator.restart(auth)
+    }
+  }, [isLoggedIn, gqlReplicator])
+
+  const setSession = async () => {
     setIsLoading(true);
-    isUserLoggedIn()
-    .then(loggedIn => {
-      if (loggedIn) {
-        const userInfo = getPersistedUserInfo();
-        if (!userInfo) {
-          return logout()
-        } else {
-          setUserInfo(userInfo);
+    const onlineStatus = await tryInternet();
+    setIsLoggedIn(onlineStatus);
+    if (onlineStatus) {
+      isUserLoggedIn()
+      .then(loggedIn => {
+        if (loggedIn) {
+          const userInfo = getPersistedUserInfo();
+          if (!userInfo) {
+            return logout()
+          } else {
+            setUserInfo(userInfo);
+          }
         }
-      }
-      setIsLoggedIn(loggedIn);
-    })
-    .catch(() => {
-      setIsLoggedIn(false);
-    })
-    .finally(() => {
+        setIsLoggedIn(loggedIn);
+      })
+      .catch(() => {
+        setIsLoggedIn(false);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      })
+    } else {
       setIsLoading(false);
-    })
+    }
   }
 
   const handleOnlineStatusChange = (x) => {

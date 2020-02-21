@@ -1,4 +1,5 @@
 import { isUserLoggedIn } from './auth'
+import { GRAPHQL_ENGINE_ENDPOINT } from '../constants'
 import React from 'react';
 
 export const setOnlineStatus = (isOnline, callback) => {
@@ -24,6 +25,12 @@ export const setOnlineStatus = (isOnline, callback) => {
     }
   }
 }
+
+export const tryInternet = () => {
+  return fetch(GRAPHQL_ENGINE_ENDPOINT)
+    .then(r => true)
+    .catch(() => false);
+};
 
 export const syncDatabase = () => {};
 

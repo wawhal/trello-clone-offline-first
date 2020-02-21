@@ -5,6 +5,16 @@ import { clearPersistedUserInfo } from '../utils/ls'
 
 const Landing = ({ auth, db }) => {
 
+  const board = (
+    <div className="app">
+      <Board auth={auth} db={db} />
+    </div>
+  );
+
+  if (!window.navigator.onLine) {
+    return board;
+  }
+
   if (auth.isAuthLoading) {
     return (
       <div className="display-flex-centre flex-direction-column">
@@ -14,11 +24,7 @@ const Landing = ({ auth, db }) => {
   }
 
   if (auth.isLoggedIn) {
-    return (
-      <div className="app">
-        <Board auth={auth} db={db} />
-      </div>
-    )
+    return board;
   }
 
   return (

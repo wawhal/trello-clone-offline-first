@@ -3,6 +3,7 @@ import { ONEGRAPH_APP_ID, AUTH_PROVIDER } from '../constants';
 import jwtDecode from 'jwt-decode'
 import { persistUserInfo, clearPersistedUserInfo } from './ls';
 import { clearDatabase } from './database'
+import { insertUser } from './graphql'
 
 const SESSION_VAR_USER_ID = 'x-hasura-user-id';
 const SESSION_VAR_USERNAME = 'x-hasura-username';
@@ -30,6 +31,7 @@ export const login = async () => {
   auth.login(AUTH_PROVIDER).then(sessionInfo => {
     console.log(sessionInfo);
     const idToken = sessionInfo.token.accessToken;
+    insertUser({ authorization: 'Bearer ' + idToken})
     persistUserInfo(getUserInfoFromToken(idToken));
     window.location.replace(window.location.href);
   }).catch(e => {

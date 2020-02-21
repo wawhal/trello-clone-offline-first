@@ -6,19 +6,31 @@ import { DragDropContext } from 'react-beautiful-dnd';
 const columns = [
   {
     id: 0,
-    name: 'Todo'
+    name: 'Random'
   },
   {
     id: 1,
-    name: 'WIP'
+    name: 'Todo'
   },
   {
     id: 2,
+    name: 'WIP'
+  },
+  {
+    id: 3,
     name: 'Done'
   },
 ];
 
 const Columns = ({ db, tasks }) => {
+
+  // React.useEffect(() => {
+  //   db.trello.find({
+  //     id: {
+  //       $ne: '-1'
+  //     }
+  //   }).remove();
+  // }, [])
 
   const columnsWithTodos = columns.map(c => {
     const columnTasks = tasks.filter(t => c.id === t.column_id);
@@ -31,8 +43,6 @@ const Columns = ({ db, tasks }) => {
   const reorderTasks = (taskId, source, destination) => {
     if (destination.index == source.index) return;
     const movedTask = tasks.find(t => t.id == taskId);
-    delete movedTask._data["_deleted"]
-    delete movedTask._data["_revisions"]
     movedTask.update({
       $set: {
         column_rank: destination.index
@@ -105,6 +115,21 @@ const Columns = ({ db, tasks }) => {
       }).update({
         $inc: {
           column_rank: 1
+        }
+      });
+      db.trello.find({
+        $and: [{
+          column_id: {
+            $eq: parseInt(source.droppableId, 10)
+          }
+        }, {
+          column_rank: {
+            $gt: source.index
+          }        
+        }]
+      }).update({
+        $inc: {
+          column_rank: -1
         }
       });
     }).catch(e => {

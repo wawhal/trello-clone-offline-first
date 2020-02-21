@@ -20,6 +20,10 @@ const AuthButton = ({ auth }) => {
     // eslint-disable-next-line
   }, [auth])
 
+  if (!window.navigator.onLine) {
+    return null;
+  }
+
   const onClick = auth.isLoggedIn ? logout : login;
 
   return (
