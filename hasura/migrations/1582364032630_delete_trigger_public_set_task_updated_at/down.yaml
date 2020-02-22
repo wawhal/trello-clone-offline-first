@@ -1,0 +1,6 @@
+- args:
+    sql: |-
+      CREATE TRIGGER "set_task_updated_at"
+      BEFORE UPDATE ON "public"."task"
+      FOR EACH ROW EXECUTE FUNCTION set_current_timestamp_updated_at();
+  type: run_sql

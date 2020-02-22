@@ -60,17 +60,9 @@ const AuthWrapper = ({children}) => {
     }
   }
 
-  const handleOnlineStatusChange = (x) => {
-    console.log(x);
-  }
-
   React.useEffect(() => {
     setSession()
   }, [])
-
-  React.useEffect(() => {
-    console.log(window.navigator.onLine);
-  }, [window.navigator.onLine])
 
   const childrenProps = {
     auth: {

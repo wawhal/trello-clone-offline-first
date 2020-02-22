@@ -18,9 +18,6 @@ const Board = ({auth, db}) => {
         if (!tasks) {
           return;
         }
-        console.log('==================FIRST LOAD');
-        console.log(tasks);
-        console.log('==================');
         setTasks(tasks);
     });
     subs.push(sub);

@@ -22,6 +22,7 @@ const Column = ({
       </div>
       <Droppable
         droppableId={id.toString()}
+        ignoreContainerClipping
       >
         {(provided, snapshot) => (
           <div

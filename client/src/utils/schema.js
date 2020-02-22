@@ -1,7 +1,7 @@
 export const trelloSchema  = {
   'title': 'trello schema',
   'description': 'todo schema',
-  'version': 5,
+  'version': 7,
   'type': 'object',
   'properties': {
     'id': {
@@ -18,7 +18,7 @@ export const trelloSchema  = {
       'type': 'string',
       'format': 'date-time',
     },
-    'update_at': {
+    'updated_at': {
       'type': 'string',
       'format': 'date-time'
     },
@@ -43,6 +43,6 @@ export const trelloSchema  = {
       'type': 'number'
     }
   },
-  'required': ['id', 'title', 'column_id', 'created_at', 'user_id', 'column_rank'],
+  'required': ['id', 'title', 'column_id', 'created_at', 'user_id', 'column_rank', 'updated_at'],
    additionalProperties: true
 };

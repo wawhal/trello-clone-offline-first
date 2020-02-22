@@ -138,12 +138,6 @@ const Columns = ({ db, tasks }) => {
 
   }
 
-  console.log(tasks.map(t => ({
-    id: t.id,
-    column_id: t.column_id,
-    column_rank: t.column_rank
-  })))
-
   const handleDragEnd = result => {
     const { source, destination, draggableId } = result;
     if (!destination || !source) return;

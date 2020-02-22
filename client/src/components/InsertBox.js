@@ -16,12 +16,8 @@ const InputBox = ({ db, column_id, column_name, columnTasks}) => {
       title: text,
       column_id,
       created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
       user_id: userInfo.userId,
-      user: {
-        id: userInfo.userId,
-        username: userInfo.username,
-        avatar: userInfo.avatar
-      },
       column_rank: columnTasks.length
     }
     setIsInserting(true)
