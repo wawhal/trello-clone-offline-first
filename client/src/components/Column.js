@@ -22,7 +22,8 @@ const Column = ({
       }
     }).update({
       $set: {
-        is_deleted: true
+        is_deleted: true,
+        updated_at: new Date().toISOString(),
       }
     });
   };

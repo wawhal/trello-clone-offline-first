@@ -114,7 +114,6 @@ const pushQueryBuilder = doc => {
     delete objCopy.user
     delete objCopy.deleted
     delete objCopy.user_id
-    delete objCopy.is_deleted
     return objCopy;
   }
 
