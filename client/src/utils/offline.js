@@ -28,7 +28,7 @@ export const setOnlineStatus = (isOnline, callback) => {
 
 export const tryInternet = () => {
   return fetch(GRAPHQL_ENGINE_ENDPOINT.replace('graphql', 'version'))
-    .then(r => true)
+    .then(() => true)
     .catch(() => false);
 };
 

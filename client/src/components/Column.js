@@ -53,7 +53,7 @@ const Column = ({
                             </Card.Body>
                             <Card.Footer>
                               <div className="display-flex space-between">
-                                <small className="text-muted">Created by {task.user_id}</small>
+                                <small className="text-muted">Created by {task.user.username}</small>
                               </div>
                             </Card.Footer>
                           </div>

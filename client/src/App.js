@@ -10,7 +10,7 @@ function App() {
     tryInternet().then(status => {
       setIsOnline(status);
     })
-  })
+  }, [])
   return (
     <AuthWrapper isOnline={isOnline}>
       <Landing />
