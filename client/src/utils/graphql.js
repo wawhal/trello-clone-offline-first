@@ -13,7 +13,7 @@ mutation {
 `
 
 export const insertUser = (headers) => {
-  fetch(
+  return fetch(
     GRAPHQL_ENGINE_ENDPOINT,
     {
       method: 'POST',
@@ -24,7 +24,9 @@ export const insertUser = (headers) => {
     }
   ).then(() => {
     console.log('Inserted user in database');
+    return Promise.resolve();
   }).catch(() => {
     console.log('Could not insert user in database');
+    return Promise.reject();
   });
 };

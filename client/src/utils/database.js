@@ -143,6 +143,12 @@ export class GraphQLReplicator {
         this.subscriptionClient = null;      
     }
 
+    close = () => {
+      if (this.subscriptionClient) {
+        this.subscriptionClient.close();
+      }
+    }
+
     async restart(auth) {
         if(this.replicationState) {
             this.replicationState.cancel()
@@ -173,7 +179,7 @@ export class GraphQLReplicator {
             * when something has changed,
             * we can set the liveIntervall to a high value
             */
-           liveInterval: 10 * 60 * 10, // 10 minutes
+           liveInterval: 1000 * 60 * 10, // 10 minutes
            deletedFlag: 'deleted'
        });
    

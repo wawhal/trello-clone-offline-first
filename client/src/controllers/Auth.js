@@ -28,6 +28,10 @@ const AuthWrapper = ({children, isOnline}) => {
   React.useEffect(() => {
     if (isLoggedIn && gqlReplicator && window.navigator.onLine) {
       gqlReplicator.restart(auth)
+    } else {
+      if (gqlReplicator) {
+        gqlReplicator.close();
+      }
     }
   }, [isLoggedIn, gqlReplicator])
 

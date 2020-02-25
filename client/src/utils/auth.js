@@ -29,10 +29,12 @@ export const getUserInfoFromToken = (token) => {
 export const login = async () => {
   auth.login(AUTH_PROVIDER).then(sessionInfo => {
     const idToken = sessionInfo.token.accessToken;
-    insertUser({ authorization: 'Bearer ' + idToken})
-    persistUserInfo(getUserInfoFromToken(idToken));
-    window.location.replace(window.location.href);
+    insertUser({ authorization: 'Bearer ' + idToken}).then(() => {
+      persistUserInfo(getUserInfoFromToken(idToken));
+      window.location.replace(window.location.href);
+    });
   }).catch(e => {
+    console.error(e);
     console.error('unable to login');
   })
 };
