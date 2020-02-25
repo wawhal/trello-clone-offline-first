@@ -9,7 +9,7 @@ let currentOnlineStatus = window.navigator.onLine;
 
 const AuthWrapper = ({children, isOnline}) => {
 
-  const [isLoggedIn, setIsLoggedIn] = React.useState(false);
+  const [isLoggedIn, setIsLoggedIn] = React.useState(!isOnline);
   const [isLoading, setIsLoading] = React.useState(true);
   const [db, setDb] = React.useState();
   const [userInfo, setUserInfo] = React.useState(null);
@@ -34,7 +34,6 @@ const AuthWrapper = ({children, isOnline}) => {
   const setSession = async () => {
     setIsLoading(true);
     const onlineStatus = await tryInternet();
-    setIsLoggedIn(onlineStatus);
     if (onlineStatus) {
       isUserLoggedIn()
       .then(loggedIn => {
@@ -55,6 +54,13 @@ const AuthWrapper = ({children, isOnline}) => {
         setIsLoading(false);
       })
     } else {
+      const userInfo = getPersistedUserInfo();
+      if (!userInfo) {
+        return logout()
+      } else {
+        setUserInfo(userInfo);
+        setIsLoggedIn(true);
+      }
       setIsLoading(false);
     }
   }
