@@ -8,8 +8,6 @@ const InputBox = ({ db, column_id, column_name, columnTasks}) => {
   const [text, setText] = React.useState('');
   const [isInserting, setIsInserting] = React.useState(false);
 
-  console.log(columnTasks);
-
   const onSubmit = (e) => {
     e.preventDefault();
     const userInfo = getPersistedUserInfo();

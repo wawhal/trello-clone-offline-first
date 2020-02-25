@@ -24,15 +24,12 @@ const columns = [
 
 const Columns = ({ db, tasks }) => {
 
-  // React.useEffect(() => {
-  //   db.trello.find({
-  //     id: {
-  //       $ne: '-1'
-  //     }
-  //   }).remove();
-  // }, [])
+  tasks.forEach(t => {
+    delete t._data["_deleted"];
+    delete t._data["_revisions"];
+  })
 
-  const columnsWithTodos = columns.map(c => {
+  const columnsWithTasks = columns.map(c => {
     const columnTasks = tasks.filter(t => c.id === t.column_id);
     return {
       ...c,
@@ -40,111 +37,71 @@ const Columns = ({ db, tasks }) => {
     };
   });
 
-  const reorderTasks = (taskId, source, destination) => {
-    if (destination.index == source.index) return;
-    const movedTask = tasks.find(t => t.id == taskId);
-    movedTask.update({
-      $set: {
-        column_rank: destination.index
-      }
-    }).then(() => {
-      if (destination.index < source.index) {
-        db.trello.find({
-          $and: [{
-            column_id: {
-              $eq: parseInt(destination.droppableId, 10)
-            }
-          }, {
-            column_rank: {
-              $gte: destination.index
-            }        
-          }, {
-            column_rank: {
-              $lt: source.index
-            }        
-          }]
-        }).update({
-          $inc: {
-            column_rank: 1
-          }
-        })
+  const reorderTasks = (source, destination, draggableId) => {
+    const destinationColumnTasks = columnsWithTasks.find(c => c.id == destination.droppableId).tasks;
+    let newRank;
+    if (destination.index === 0) {
+      if (destinationColumnTasks.length) {
+        newRank = destinationColumnTasks[0].column_rank - 1;
       } else {
-        db.trello.find({
-          $and: [{
-            column_id: {
-              $eq: parseInt(destination.droppableId, 10)
-            }
-          }, {
-            column_rank: {
-              $gt: source.index
-            }        
-          }, {
-            column_rank: {
-              $lte: source.index
-            }        
-          }]
-        }).update({
-          $inc: {
-            column_rank: -1
-          }
-        })
+        newRank = 1;
       }
-    }).catch((e) => {
-      console.error('could not update', e);
-    });;
-  };
+    } else if (destination.index === destinationColumnTasks.length - 1) {
+      newRank = destinationColumnTasks[destinationColumnTasks.length - 1].column_rank + 1;
+    } else {
+      newRank = (destinationColumnTasks[destination.index].column_rank + destinationColumnTasks[destination.index - 1].column_rank) / 2;
+    }
 
-  const moveTasks = (taskId, source, destination) => {
-    const movedTask = tasks.find(t => t.id == taskId);
-    movedTask.update({
+    db.trello.find({
+      id: {
+        $eq: draggableId
+      }
+    }).update({
       $set: {
-        column_rank: destination.index,
+        column_rank: newRank,
         column_id: parseInt(destination.droppableId, 10)
       }
-    }).then(() => {
-      db.trello.find({
-        $and: [{
-          column_id: {
-            $eq: parseInt(destination.droppableId, 10)
-          }
-        }, {
-          column_rank: {
-            $gte: destination.index
-          }        
-        }]
-      }).update({
-        $inc: {
-          column_rank: 1
-        }
-      });
-      db.trello.find({
-        $and: [{
-          column_id: {
-            $eq: parseInt(source.droppableId, 10)
-          }
-        }, {
-          column_rank: {
-            $gt: source.index
-          }        
-        }]
-      }).update({
-        $inc: {
-          column_rank: -1
-        }
-      });
-    }).catch(e => {
-      console.error(e);
-    });
+    })
+  }
 
+  const moveTasks = (source, destination, draggableId) => {
+    const destinationColumnTasks = columnsWithTasks.find(c => c.id == destination.droppableId).tasks;
+    let newRank;
+    if (destination.index === 0) {
+      if (destinationColumnTasks.length) {
+        newRank = destinationColumnTasks[0].column_rank - 1;
+      } else {
+        newRank = 1;
+      }
+    } else if (destination.index === destinationColumnTasks.length) {
+      newRank = destinationColumnTasks[destinationColumnTasks.length - 1].column_rank + 1;
+    } else {
+      newRank = (destinationColumnTasks[destination.index].column_rank + destinationColumnTasks[destination.index - 1].column_rank) / 2;
+    }
+
+    db.trello.find({
+      id: {
+        $eq: draggableId
+      }
+    }).update({
+      $set: {
+        column_rank: newRank,
+        column_id: parseInt(destination.droppableId, 10)
+      }
+    })
   }
 
   const handleDragEnd = result => {
     const { source, destination, draggableId } = result;
     if (!destination || !source) return;
-    if (source.droppableId === destination.droppableId) {
-      reorderTasks(draggableId, source, destination);
+    if (destination.droppableId === source.droppableId && destination.index === source.index) return;
+
+    if (destination.droppableId === source.droppableId)  {
+      if (destination.index !== source.index) {
+        reorderTasks(source, destination, draggableId);
+      }
     } else {
-      moveTasks(draggableId, source, destination);
+      moveTasks(source, destination, draggableId);
     }
   }
 
@@ -153,7 +110,7 @@ const Columns = ({ db, tasks }) => {
       onDragEnd={handleDragEnd}
     >
     {
-      columnsWithTodos.map(c => {
+      columnsWithTasks.map(c => {
         return (
           <div className="wd400" key={c.id}>
           <Column

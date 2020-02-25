@@ -67,7 +67,7 @@ export const pullQueryBuilder = (doc) => {
   }
 
   const query = `
-query ($updated_at: timestamptz, $id: String, $column_id: Int, $column_rank: Int) {
+query ($updated_at: timestamptz, $id: String, $column_id: Int, $column_rank: numeric) {
   task(where: {_or: [{updated_at: {_gt: $updated_at}}, {_and: [{id: {_eq: $id}}, {column_id: {_neq: $column_id}}, {column_rank: {_neq: $column_rank}}]}]}) {
     id
     column_id
@@ -173,7 +173,7 @@ export class GraphQLReplicator {
             * when something has changed,
             * we can set the liveIntervall to a high value
             */
-           liveInterval: 1000 * 60 * 10, // 10 minutes
+           liveInterval: 10 * 60 * 10, // 10 minutes
            deletedFlag: 'deleted'
        });
    
