@@ -11,6 +11,15 @@ const Column = ({
 }) => {
 
   const sortedTasks = tasks.sort((t1, t2) => {
+    if (t1.column_id === 1) {
+      console.log('=======================');
+      console.log(t1.title)
+      console.log(t1.column_rank)
+      console.log(t2.title)
+      console.log(t2.column_rank)
+      console.log('Returning ' + t1.column_rank > t2.column_rank ? '1' : '-1')
+      console.log('=======================');
+    }
     if (t1.column_rank > t2.column_rank) return 1;
     return -1;
   });

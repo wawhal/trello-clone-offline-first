@@ -7,14 +7,13 @@ import { getPersistedUserInfo, clearPersistedUserInfo } from '../utils/ls'
 
 let currentOnlineStatus = window.navigator.onLine;
 
-const AuthWrapper = ({children}) => {
+const AuthWrapper = ({children, isOnline}) => {
 
   const [isLoggedIn, setIsLoggedIn] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(true);
   const [db, setDb] = React.useState();
   const [userInfo, setUserInfo] = React.useState(null);
   const [gqlReplicator ,setgqlReplicator] = React.useState(null);
-  const [isOnline, setIsOnline] = React.useState(false);
 
   React.useEffect(() => {
     if (isLoggedIn) {

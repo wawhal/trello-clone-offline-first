@@ -12,7 +12,7 @@ function App() {
     })
   })
   return (
-    <AuthWrapper>
+    <AuthWrapper isOnline={isOnline}>
       <Landing />
     </AuthWrapper>
   );
