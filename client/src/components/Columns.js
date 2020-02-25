@@ -24,6 +24,14 @@ const columns = [
 
 const Columns = ({ db, tasks }) => {
 
+  // React.useEffect(() => {
+  //   db.trello.find({
+  //     id: {
+  //       $ne: 'kdjkfdsjkfdj'
+  //     }
+  //   }).remove();
+  // }, [])
+
   tasks.forEach(t => {
     delete t._data["_deleted"];
     delete t._data["_revisions"];

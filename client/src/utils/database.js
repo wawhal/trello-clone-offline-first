@@ -42,6 +42,7 @@ export const createDatabase = async () => {
         5: () => null,
         6: () => null,
         7: () => null,
+        8: () => null,
       }
     })
   } catch (e) {
@@ -113,6 +114,7 @@ const pushQueryBuilder = doc => {
     delete objCopy.user
     delete objCopy.deleted
     delete objCopy.user_id
+    delete objCopy.is_deleted
     return objCopy;
   }
 

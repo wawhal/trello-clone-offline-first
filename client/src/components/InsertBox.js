@@ -17,6 +17,7 @@ const InputBox = ({ db, column_id, column_name, columnTasks}) => {
       column_id,
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
+      is_deleted: false,
       user_id: userInfo.userId,
       user: {
         username: userInfo.userId,

@@ -64,3 +64,9 @@
 .space-between {
   justify-content: space-between;
 }
+
+.remove-button {
+  height: 15px;
+  font-size: 10px !important;
+  padding: 0 2px !important;
+}

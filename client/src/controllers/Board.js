@@ -13,7 +13,11 @@ const Board = ({auth, db}) => {
       return;
     }
     const sub = db.trello
-      .find()
+      .find({
+        is_deleted: {
+          $ne: true
+        }
+      })
       .sort({id: 1}).$.subscribe(tasks => {
         if (!tasks) {
           return;

@@ -1,7 +1,7 @@
 export const trelloSchema  = {
   'title': 'trello schema',
   'description': 'todo schema',
-  'version': 7,
+  'version': 8,
   'type': 'object',
   'properties': {
     'id': {
@@ -41,6 +41,9 @@ export const trelloSchema  = {
     },
     'column_rank': {
       'type': 'number'
+    },
+    'is_deleted': {
+      'type': 'boolean'
     }
   },
   'required': ['id', 'title', 'column_id', 'created_at', 'user_id', 'column_rank', 'updated_at'],

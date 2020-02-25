@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card } from 'react-bootstrap';
+import { Card, Button } from 'react-bootstrap';
 import { Droppable, Draggable } from 'react-beautiful-dnd';
 import InputBox from './InsertBox';
 
@@ -14,6 +14,18 @@ const Column = ({
     if (t1.column_rank > t2.column_rank) return 1;
     return -1;
   });
+
+  const removeTask = (id) => {
+    db.trello.find({
+      id: {
+        $eq: id
+      }
+    }).update({
+      $set: {
+        is_deleted: true
+      }
+    });
+  };
 
   return (
     <div className="column margin-right" key={id}>
@@ -54,6 +66,9 @@ const Column = ({
                             <Card.Footer>
                               <div className="display-flex space-between">
                                 <small className="text-muted">Created by {task.user.username}</small>
+                                <button className="btn btn-danger remove-button" onClick={() => removeTask(task.id)}>
+                                  Remove
+                                </button>
                               </div>
                             </Card.Footer>
                           </div>
