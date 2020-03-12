@@ -16,7 +16,7 @@ const NavigationBar = ({ auth }) => {
 
   const getUserInfoNav = () => {
     
-    if (!userInfo) {
+    if (!userInfo || (!auth || !auth.isLoggedIn)) {
       return null;
     }
     return (
