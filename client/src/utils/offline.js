@@ -1,8 +1,6 @@
 import { isUserLoggedIn } from './auth'
-
-export const pollOnlineStatus = (isOnline, callback) => {
-  setInterval(() => setOnlineStatus(isOnline, callback), 1000);
-};
+import { GRAPHQL_ENGINE_ENDPOINT } from '../constants'
+import React from 'react';
 
 export const setOnlineStatus = (isOnline, callback) => {
   const status = window.navigator.onLine;
@@ -27,6 +25,12 @@ export const setOnlineStatus = (isOnline, callback) => {
     }
   }
 }
+
+export const tryInternet = () => {
+  return fetch(GRAPHQL_ENGINE_ENDPOINT.replace('graphql', 'version'))
+    .then(() => true)
+    .catch(() => false);
+};
 
 export const syncDatabase = () => {};
 

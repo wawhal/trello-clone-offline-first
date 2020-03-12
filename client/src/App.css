@@ -1,0 +1,72 @@
+.margin-bottom {
+  margin-bottom: 20px;
+}
+
+.margin-bottom-mid {
+  margin-bottom: 10px;
+}
+
+.margin-right {
+  margin-right: 20px;
+}
+.margin-right-mid {
+  margin-right: 10px;
+}
+
+.display-flex-raw {
+  display: flex;
+}
+
+.display-flex {
+  display: flex;
+  align-items: center;
+}
+
+.display-flex-centre {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.flex-direction-column {
+  flex-direction: column;
+}
+
+.app {
+  padding: 20px;
+}
+
+.column {
+  background: #ccc;
+  border: 1px solid darkgray;
+  border-radius: 5px;
+  padding: 10px;
+  padding-bottom: 30px;
+}
+
+.wd400 {
+  width: 400px;
+}
+
+.ht1000 {
+  min-height: 1000px;
+}
+
+.avatar {
+  width: 40px;
+  border-radius: 20px
+}
+
+.card-overrides {
+  max-height: 50px;
+}
+
+.space-between {
+  justify-content: space-between;
+}
+
+.remove-button {
+  height: 15px;
+  font-size: 10px !important;
+  padding: 0 2px !important;
+}

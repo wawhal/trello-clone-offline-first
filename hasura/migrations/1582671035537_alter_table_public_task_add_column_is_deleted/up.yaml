@@ -1,0 +1,6 @@
+- args:
+    cascade: false
+    read_only: false
+    sql: ALTER TABLE "public"."task" ADD COLUMN "is_deleted" boolean NOT NULL DEFAULT
+      false;
+  type: run_sql

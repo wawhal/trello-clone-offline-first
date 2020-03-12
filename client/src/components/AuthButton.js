@@ -5,18 +5,12 @@ import Spinner from './Spinner';
 
 const AuthButton = ({ auth }) => {
 
-
   const getAuthButtonContent = () => {
-    if (auth.isAuthLoading) {
-      return <Spinner />;
-    }
     if (auth.isLoggedIn) {
       return 'Logout';
     }
     return 'Login';
   };
-
-  console.log(auth);
 
   const [error, setError] = React.useState(null);
   const [buttonContent, setButtonContent] = React.useState(getAuthButtonContent());
@@ -26,29 +20,11 @@ const AuthButton = ({ auth }) => {
     // eslint-disable-next-line
   }, [auth])
 
-  const loginAndRefresh = () => {
-    login()
-    .then(() => {
-      window.location.replace(window.location.href);
-    })
-    .catch(err => {
-      console.error(error);
-      setError(error)
-    })
-  };
-
-  const logoutAndRefresh = () => {
-    logout()
-    .then(() => {
-      window.location.replace(window.location.href);
-    })
-    .catch(err => {
-      console.error(err);
-      alert('Unexpected', 'Could not logout');
-    })
+  if (!window.navigator.onLine) {
+    return null;
   }
 
-  const onClick = auth.isLoggedIn ? logoutAndRefresh : loginAndRefresh;
+  const onClick = auth.isLoggedIn ? logout : login;
 
   return (
     <Button

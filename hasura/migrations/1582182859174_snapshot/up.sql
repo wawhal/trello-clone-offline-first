@@ -1,8 +1,22 @@
+CREATE FUNCTION public.set_current_timestamp_updated_at() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+DECLARE
+  _new record;
+BEGIN
+  _new := NEW;
+  _new."updated_at" = NOW();
+  RETURN _new;
+END;
+$$;
 CREATE TABLE public.task (
     id text NOT NULL,
     user_id text NOT NULL,
     column_id integer NOT NULL,
-    title text NOT NULL
+    title text NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    column_rank integer NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL
 );
 CREATE TABLE public."user" (
     id text NOT NULL,
@@ -28,6 +42,7 @@ ALTER TABLE ONLY public.task
     ADD CONSTRAINT task_pkey PRIMARY KEY (id);
 ALTER TABLE ONLY public."user"
     ADD CONSTRAINT user_pkey PRIMARY KEY (id);
+CREATE TRIGGER set_task_updated_at BEFORE UPDATE ON public.task FOR EACH ROW EXECUTE FUNCTION public.set_current_timestamp_updated_at();
 ALTER TABLE ONLY public.task
     ADD CONSTRAINT task_column_id_fkey FOREIGN KEY (column_id) REFERENCES public."column"(id) ON UPDATE RESTRICT ON DELETE RESTRICT;
 ALTER TABLE ONLY public.task

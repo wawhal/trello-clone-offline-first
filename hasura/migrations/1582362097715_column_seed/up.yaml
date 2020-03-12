@@ -1,0 +1,5 @@
+- args:
+    cascade: false
+    sql: insert into public.column(id, name) values (0, 'Random'), (1, 'Todo'), (2,
+      'WIP'), (3, 'Done') on conflict (id) do nothing;
+  type: run_sql

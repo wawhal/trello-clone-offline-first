@@ -1,62 +1,98 @@
 import React from 'react';
-import { isUserLoggedIn, logout } from '../utils/auth';
+import { isUserLoggedIn, logout, auth } from '../utils/auth';
 import Navbar from '../components/Navbar';
-import { pollOnlineStatus, setOnlineStatus } from '../utils/offline'
+import { tryInternet } from '../utils/offline'
+import * as DBUtils from '../utils/database';
+import { getPersistedUserInfo, clearPersistedUserInfo } from '../utils/ls'
 
-const AuthWrapper = ({children}) => {
+let currentOnlineStatus = window.navigator.onLine;
 
-  const [isLoggedIn, setIsLoggedIn] = React.useState(false);
+const AuthWrapper = ({children, isOnline}) => {
+
+  const [isLoggedIn, setIsLoggedIn] = React.useState(!isOnline);
   const [isLoading, setIsLoading] = React.useState(true);
-  const [isOnline, setIsOnline] = React.useState(false);
+  const [db, setDb] = React.useState();
+  const [userInfo, setUserInfo] = React.useState(null);
+  const [gqlReplicator ,setgqlReplicator] = React.useState(null);
 
-  const setSession = () => {
+  React.useEffect(() => {
+    if (isLoggedIn) {
+      DBUtils.createDatabase().then(database => {
+        setDb(database);
+        const graphqlReplicator = new DBUtils.GraphQLReplicator(database);
+        setgqlReplicator(graphqlReplicator);
+      });
+    }
+  }, [isLoggedIn])
+
+  React.useEffect(() => {
+    if (isLoggedIn && gqlReplicator && window.navigator.onLine) {
+      gqlReplicator.restart(auth);
+    } else {
+      if (gqlReplicator) {
+        gqlReplicator.close();
+      }
+    }
+  }, [isLoggedIn, gqlReplicator])
+
+  const setSession = async () => {
     setIsLoading(true);
-    isUserLoggedIn()
-    .then(loggedIn => {
-      setIsLoggedIn(loggedIn);
-    })
-    .catch(() => {
-      setIsLoggedIn(false);
-    })
-    .finally(() => {
+    const onlineStatus = await tryInternet();
+    if (onlineStatus) {
+      isUserLoggedIn()
+      .then(loggedIn => {
+        if (loggedIn) {
+          const userInfo = getPersistedUserInfo();
+          if (!userInfo) {
+            return logout()
+          } else {
+            setUserInfo(userInfo);
+          }
+        }
+        setIsLoggedIn(loggedIn);
+      })
+      .catch(() => {
+        setIsLoggedIn(false);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      })
+    } else {
+      const userInfo = getPersistedUserInfo();
+      if (!userInfo) {
+        return logout()
+      } else {
+        setUserInfo(userInfo);
+        setIsLoggedIn(true);
+      }
       setIsLoading(false);
-    })
+    }
   }
 
   React.useEffect(() => {
-    const callback = (newStatus) => {
-      setIsOnline(newStatus);
-    };
-    setOnlineStatus(isOnline, callback);
-    pollOnlineStatus(isOnline, callback);
-    // eslint-disable-next-line
+    setSession()
   }, [])
 
-  React.useEffect(() => {
-    if (isOnline) {
-      setSession();
-    }
-  }, [isOnline])
-
-  const authProps = {
+  const childrenProps = {
     auth: {
       isAuthLoading: isLoading,
       isLoggedIn: isLoggedIn,
-      logout,
-    }
+      logout: logout,
+    },
+    db
   };
 
   const childrenWithProps = React.Children.map(
     children,
     child => React.cloneElement(
       child,
-      authProps   
+      childrenProps   
     )
   );
 
   return (
     <div className="layout">
-      <Navbar {...authProps} />
+      <Navbar {...childrenProps} />
       {childrenWithProps}
     </div>
   );
