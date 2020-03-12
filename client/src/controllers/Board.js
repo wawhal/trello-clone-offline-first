@@ -18,7 +18,7 @@ const Board = ({auth, db}) => {
           $ne: true
         }
       })
-      .sort({id: 1}).$.subscribe(tasks => {
+      .$.subscribe(tasks => {
         if (!tasks) {
           return;
         }

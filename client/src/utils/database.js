@@ -54,8 +54,14 @@ export const createDatabase = async () => {
 
 export const clearDatabase = () => {
   if (window.db) {
-    const query = window.db.trello.find();
-    query.remove();
+    return window.db.remove().then(() => {
+      return Promise.resolve();
+    }).catch((e) => {
+      console.error(e);
+      return Promise.reject();
+    })
+  } else {
+    return Promise.resolve();
   }
 }
 
@@ -68,8 +74,26 @@ export const pullQueryBuilder = (doc) => {
   }
 
   const query = `
-query ($updated_at: timestamptz, $id: String, $column_id: Int, $column_rank: numeric) {
-  task(where: {_or: [{updated_at: {_gt: $updated_at}}, {_and: [{id: {_eq: $id}}, {column_id: {_neq: $column_id}}, {column_rank: {_neq: $column_rank}}]}]}) {
+query (
+  $updated_at: timestamptz,
+  $id: String,
+  $column_id: Int,
+  $column_rank: numeric
+) {
+  task (
+    where: {
+      _or: [
+        { updated_at: { _gt: $updated_at } },
+        {
+          _and: [
+            { id: { _eq: $id } },
+            { column_id: { _neq: $column_id } },
+            { column_rank: { _neq: $column_rank } }
+          ]
+        }
+      ]
+    }
+  ) {
     id
     column_id
     column_rank
@@ -99,9 +123,16 @@ query ($updated_at: timestamptz, $id: String, $column_id: Int, $column_rank: num
 };
 
 const pushQueryBuilder = doc => {
+
   const query = `
     mutation ($tasks: [task_insert_input!]!) {
-      insert_task(objects: $tasks on_conflict: { constraint: task_pkey, update_columns: [column_rank, column_id, updated_at, is_deleted]}) {
+      insert_task(
+        objects: $tasks
+        on_conflict: {
+          constraint: task_pkey,
+          update_columns: [column_rank, column_id, updated_at, is_deleted]
+        }
+      ) {
         returning {
           id
           is_deleted

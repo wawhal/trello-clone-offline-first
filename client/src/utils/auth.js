@@ -42,7 +42,7 @@ export const login = async () => {
 export const logout =  async () => {
   auth.logout(AUTH_PROVIDER).then(() => {
     clearPersistedUserInfo();
-    Promise.all([clearDatabase()]).then(() => {
+    clearDatabase().then(() => {
       window.location.replace(window.location.href);
     }).catch((e) => {
       throw e
