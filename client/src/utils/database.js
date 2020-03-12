@@ -76,6 +76,7 @@ query ($updated_at: timestamptz, $id: String, $column_id: Int, $column_rank: num
     created_at
     title
     updated_at
+    is_deleted
     user_id
     user {
       avatar
@@ -100,9 +101,10 @@ query ($updated_at: timestamptz, $id: String, $column_id: Int, $column_rank: num
 const pushQueryBuilder = doc => {
   const query = `
     mutation ($tasks: [task_insert_input!]!) {
-      insert_task(objects: $tasks on_conflict: { constraint: task_pkey, update_columns: [column_rank, column_id, updated_at]}) {
+      insert_task(objects: $tasks on_conflict: { constraint: task_pkey, update_columns: [column_rank, column_id, updated_at, is_deleted]}) {
         returning {
           id
+          is_deleted
         }
       }
     }
